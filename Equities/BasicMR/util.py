@@ -32,12 +32,17 @@ def yf_to_timeseries(df: pd.DataFrame, periods_per_day: int, exchange: Literal["
     oc = np.zeros((len(df) + day_diff, 2))
 
     # open values
-    oc[::ppd+1, 0] = df.loc[::ppd, "Open"]
+    oc[::ppd+1, 0] = np.squeeze(df.loc[::ppd, "Open"].to_numpy())  # modified to use np.squeeze()
     # close values
     oc_idx = np.ones((len(oc), ), dtype=bool)
     oc_idx[::ppd+1] = False
-    oc[oc_idx, 0] = df.loc[:, "Adj Close"].values
-    oc[oc_idx, 1] = df.loc[:, "Volume"].values
+    # Modified: fallback to "Close" if "Adj Close" column is missing
+    try:
+        close_data = df.loc[:, "Adj Close"].values
+    except KeyError:
+        close_data = df.loc[:, "Close"].values
+    oc[oc_idx, 0] = np.squeeze(close_data)  # modified to use np.squeeze()
+    oc[oc_idx, 1] = np.squeeze(df.loc[:, "Volume"].values)  # flatten Volume values to fix shape mismatch
 
     # creating index for dates
     idx = np.ones((len(oc), ), dtype=bool)

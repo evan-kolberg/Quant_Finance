@@ -1,3 +1,4 @@
 .vscode/settings.json
 Crypto/.vscode/settings.json
 Crypto/test.ipynb
+*.pyc

@@ -86,14 +86,14 @@ class BasicMR(Strategy):
             order = self.order_factory.market(
                 instrument_id=self.instrument_id,
                 order_side=OrderSide.BUY,
-                quantity=Quantity.from_int(self.trade_size),
+                quantity=Quantity.from_int(int(self.trade_size)),
             )
             self.submit_order(order)
         elif self.val <= -0.01 and self.val >= -0.02 and v < self.avg_quantity:
             order = self.order_factory.market(
                 instrument_id=self.instrument_id,
                 order_side=OrderSide.SELL,
-                quantity=Quantity.from_int(self.trade_size),
+                quantity=Quantity.from_int(int(self.trade_size)),
             )
             self.submit_order(order)
 
